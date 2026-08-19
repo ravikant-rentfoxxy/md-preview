@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@xyflow/react": "^12.11.3",
+    "dagre": "^0.8.5",
     "highlight.js": "^11.12.0",
+    "node-sql-parser": "^5.4.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",

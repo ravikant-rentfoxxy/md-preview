@@ -2,6 +2,11 @@
   min-height: 100vh;
 }
 
+.app.sql-mode {
+  height: 100vh;
+  overflow: hidden;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -580,7 +585,9 @@
   .banner,
   .reader-tools,
   .drop-overlay,
-  .source {
+  .source,
+  .erd-sidebar,
+  .erd-toolbar {
     display: none !important;
   }
 

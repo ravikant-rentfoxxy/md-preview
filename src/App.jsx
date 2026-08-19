@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import SqlPreview from './SqlPreview.jsx'
+import SqlDiagram from './SqlDiagram.jsx'
 import './App.css'
 
 function getFileKind(file) {
@@ -103,6 +103,44 @@ export default function App() {
     else mdInputRef.current?.click()
   }
 
+  const goHome = () => {
+    setFileName('')
+    setContent('')
+    setKind('markdown')
+    setView('preview')
+    setError('')
+  }
+
+  if (hasFile && kind === 'sql') {
+    return (
+      <div className={`app sql-mode${dragging ? ' is-dragging' : ''}`}>
+        <input
+          ref={sqlInputRef}
+          type="file"
+          accept=".sql,application/sql,text/sql"
+          hidden
+          onChange={(event) => {
+            loadFile(event.target.files?.[0], 'sql')
+            event.target.value = ''
+          }}
+        />
+        <SqlDiagram
+          content={content}
+          fileName={fileName}
+          view={view}
+          onView={setView}
+          onBack={goHome}
+          onPrint={printDoc}
+        />
+        {dragging ? (
+          <div className="drop-overlay">
+            <div className="drop-card">Drop a .sql file to replace this one</div>
+          </div>
+        ) : null}
+      </div>
+    )
+  }
+
   return (
     <div className={`app${dragging ? ' is-dragging' : ''}${hasFile ? ' has-file' : ''}`}>
       <header className="topbar">
@@ -159,13 +197,13 @@ export default function App() {
                   SQL
                 </span>
                 <strong>Upload SQL</strong>
-                <span>Open a .sql file with highlighting</span>
+                <span>Open a .sql file as a table diagram</span>
                 <em>Choose .sql file</em>
               </button>
             </div>
             <ul className="home-tips">
               <li>Works offline — the file stays on your computer</li>
-              <li>You can also drop a .md or .sql file onto this page</li>
+              <li>SQL files open as a table diagram, with Source for the raw file</li>
               <li>Print it, or choose Save as PDF in the print dialog</li>
             </ul>
           </section>
@@ -194,6 +232,9 @@ export default function App() {
               </div>
 
               <div className="doc-bar">
+                <button type="button" className="btn ghost" onClick={goHome}>
+                  ← Back
+                </button>
                 <div className="file-chip" title={fileName}>
                   {fileName}
                 </div>
@@ -227,7 +268,7 @@ export default function App() {
 
             {kind === 'sql' ? (
               <div className={view === 'source' ? 'paper-hidden' : ''}>
-                <SqlPreview content={content} fileName={fileName} />
+                <SqlDiagram content={content} fileName={fileName} />
               </div>
             ) : (
               <article className={`paper markdown-body${view === 'source' ? ' paper-hidden' : ''}`}>
